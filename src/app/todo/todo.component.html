@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="row">
+        <div class="col-5 mx-auto">
+            <!--yatayda sağdan ve soldan eşit boşluk bırak -->
+            <h3 class="bg-primary text-white p-3">
+                {{ getName() }}'s TodoList
+            </h3>
+            <!--mavi bir zemin üstüne beyaz bir metin ve dört köşeden padding-->
+
+            <div class="input-group-mb-3">
+                <input #txtItem type="text" class="form-control"
+                (keyup.enter)="addItem(txtItem.value);txtItem.value='';"
+                > 
+                <button class="btn btn-outline-primary" (click)="addItem(txtItem.value);txtItem.value=''">Add</button>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" [(ngModel)]="displayAll" class="form-check-input" name="" id="displayAll"> <!--NGMODEL ile displayall'a bağladık-->
+                <label for="displayAll" class="form-check-label">All Show</label>
+            </div>
+
+            {{ displayAll }}
+
+            <table class="table table-bordered"> <!--kenarlıklar eklenir-->
+
+            <thead>
+            <tr>
+                <th></th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+            <tbody>
+                <tr *ngFor="let item of getItems(); let i = index; ">
+                    <td>{{ i+1 }}</td> <!--1,2,3..-->
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.action }}</td>
+                    <td>
+                        <input type="checkbox" [(ngModel)]="item.action" name="" id="">  <!--artık liste içindeki her bir elemanın checkboxunu true iken false , false iken true yapma imkanı sağladık-->
+                    </td>
+                </tr>
+                <!-- <tr>
+                    <td>2</td>
+                    <td>Spor</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Alışveriş</td>
+                    <td>No</td>
+                </tr> -->
+            </tbody>
+        
+        </table>
+        <!-- <div>
+            <p *ngFor="let item of items">  ngfor+tab (döngünün amacı: item'ın içinde dolaş ve gelen elemanları sırayla item'a kopyala)
+            {{ item.description }}
+        </p>
+        </div> -->
+        </div>
+    </div>
+</div>

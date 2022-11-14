@@ -1,0 +1,6 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+
+/* uygulamanın genelini etkileyecek olan css kodları buraya yazılır*/
+@import "~bootstrap/dist/css/bootstrap.min.css"; 
