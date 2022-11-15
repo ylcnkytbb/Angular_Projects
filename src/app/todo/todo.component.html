@@ -1,42 +1,153 @@
 <div class="container">
     <div class="row">
-        <div class="col-5 mx-auto">
+        <div class="col-7 mx-auto">
             <!--yatayda sağdan ve soldan eşit boşluk bırak -->
-            <h3 class="bg-primary text-white p-3">
+            <h3 class="bg-primary text-white p-4">
                 {{ getName() }}'s TodoList
             </h3>
             <!--mavi bir zemin üstüne beyaz bir metin ve dört köşeden padding-->
+                <!-- {{ inputText}}  bu burda yazılı kalsa text labelın üstünde gereksiz bir yazı kalıyor-->
 
             <div class="input-group-mb-3">
-                <input #txtItem type="text" class="form-control"
-                (keyup.enter)="addItem(txtItem.value);txtItem.value='';"
+                <input
+                 type="text" class="form-control"
+                 [(ngModel)]="inputText"
+                (keyup.enter)="addItem();"
+               
                 > 
-                <button class="btn btn-outline-primary" (click)="addItem(txtItem.value);txtItem.value=''">Add</button>
+                <button 
+                [class]="getBtnClasses()"
+                class="btn mt-2" (click)="addItem();">Add</button>
             </div>
 
-            <div class="form-check mb-3">
+            <!-- Silme İşlemi -->
+             
+            <!-- <div *ngFor="let item of items" class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-10">
+                      {{item}}  -->
+                      <!-- dizideki görevin bilgisini yazdırıyoruz-->
+                    <!-- </div>
+                    <div class="col-sm-2">  -->
+                      <!-- Silme işlemi için removeItem fonksiyonu çağrılıyor. 
+                        Parametre ise dizinin o anki elemanı-->
+                       <!-- <input type="button" class="btn btn-primary" (click)="removeItem(item)" value="Çıkart" />
+                    </div>
+                  </div>
+                </div>   -->
+    
+           <div class="my-2">
+             
+            {{ displayCount() }} görev tamamlandı.
+           </div>
+      
+
+            <div class="form-check input-group-mb-3">
                 <input type="checkbox" [(ngModel)]="displayAll" class="form-check-input" name="" id="displayAll"> <!--NGMODEL ile displayall'a bağladık-->
-                <label for="displayAll" class="form-check-label">All Show</label>
+                <label for="displayAll" class="form-check-label">Tüm görevleri göster</label>
             </div>
 
-            {{ displayAll }}
+            <div class="alert alert-warning" *ngIf="getItems().length == 0 else itemsTable"> <!-- tabloda eleman yoksa alert ver eğer değilse itemsTemplateden tablo elemanlarını getir-->
+                Tüm görevler tamamlandı!
+            </div>
 
-            <table class="table table-bordered"> <!--kenarlıklar eklenir-->
+          <ng-template #itemsTable>
+          
+            <table class="table table-bordered" *ngIf="getItems().length > 0 "> <!--kenarlıklar eklenir-->
 
-            <thead>
+            <thead class="bg-primary-ms-auto">
             <tr>
                 <th></th>
                 <th>Description</th>
                 <th>Action</th>
+                <th></th>
+                
+
+               
+            
+                
+        
             </tr>
+
         </thead>
             <tbody>
-                <tr *ngFor="let item of getItems(); let i = index; ">
+                <tr *ngFor="let item of getItems(); let i = index; " [class.bg-primary-ms-auto]="item.action" [class.bg-warning]="!item.action"> <!--item.action true olduğunda satır mavi, false olduğunda sarı olsun-->
+                    <!--üstteki duruma alternatif-->
+
+                    <!-- [class]="{ 'bg-primary': item.action, 'bg-warning': !item.action }" -->
+                    
+                
                     <td>{{ i+1 }}</td> <!--1,2,3..-->
                     <td>{{ item.description }}</td>
-                    <td>{{ item.action }}</td>
+                    <!-- <td>{{ i }}</td>
+                    <td>{{ i }}</td> -->
+
+                   
+                 
+                   
+                    
+                   
+
+                    <!-- <td>{{ item.action }}</td>
+                    <td>{{ item.delete }}</td> -->
+                  
+                    
+
+                    <td> 
+
+                        <!--if bloğu-->
+
+                        <!-- <div *ngIf="item.action">Yes</div>
+                        <div *ngIf="!item.action">No</div> --> 
+
+                        <!--if bloğu kullanmak yerine ng switch kullanabiliriz  -->
+
+
+                        <!--a-ngswitch -->
+
+                         <!-- <div [ngSwitch]="item.action">   
+                            <div *ngSwitchCase="true">Yes</div>
+                            <div *ngSwitchDefault>No</div>
+                        </div> -->
+
+                        <!-- if-else bloğu -->
+
+                        <div *ngIf="item.action; else noTemplate">
+                            Yes
+                        </div>
+
+                        <ng-template #noTemplate>
+                            No
+                        </ng-template>
+                        
+                        <!-- if-then bloğu -->
+
+                         <!-- <div *ngIf="item.action;then noTemplate">
+                            Burası gösterilmez. Bu div sadece yer tutucu olarak kullanılır.
+                        </div>
+
+                        <ng-template #noTemplate>
+                            No
+                        </ng-template>  -->
+
+
+                        <!-- if-then-else -->
+
+                        <!-- <div *ngIf="item.action; else yesTemplate else noTemplate">
+                            Burası gösterilmez bu div sadece yer tutucudur.
+                        </div>
+
+                        <ng-template #noTemplate>
+                            No
+                        </ng-template> 
+
+                        <ng-template #yesTemplate>
+                          Yes
+                        </ng-template>  -->
+                    </td>
                     <td>
-                        <input type="checkbox" [(ngModel)]="item.action" name="" id="">  <!--artık liste içindeki her bir elemanın checkboxunu true iken false , false iken true yapma imkanı sağladık-->
+                        <input type="checkbox"  (change)="onActionChanged(item)" [(ngModel)]="item.action" name="" id="">  <!--artık liste içindeki her bir elemanın checkboxunu true iken false , false iken true yapma imkanı sağladık-->
                     </td>
                 </tr>
                 <!-- <tr>
@@ -52,6 +163,10 @@
             </tbody>
         
         </table>
+    </ng-template>
+  
+
+     
         <!-- <div>
             <p *ngFor="let item of items">  ngfor+tab (döngünün amacı: item'ın içinde dolaş ve gelen elemanları sırayla item'a kopyala)
             {{ item.description }}
